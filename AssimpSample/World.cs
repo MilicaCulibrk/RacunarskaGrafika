@@ -54,7 +54,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 800.0f;
+        private float m_sceneDistance = 600.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -158,10 +158,8 @@ namespace AssimpSample
         {
             gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             gl.Color(1f, 0f, 0f);
-            // Model sencenja na flat (konstantno)
-            gl.ShadeModel(OpenGL.GL_FLAT);
+            gl.Enable(OpenGL.GL_CULL_FACE);
             gl.Enable(OpenGL.GL_DEPTH_TEST);
-            //gl.Enable(OpenGL.GLU_CULLING);
             m_scene.LoadScene();
             m_scene.Initialize();
         }
@@ -176,7 +174,7 @@ namespace AssimpSample
             m_height = height;
             gl.MatrixMode(OpenGL.GL_PROJECTION);      
             gl.LoadIdentity();
-            gl.Perspective(45f, (double)width / height, 1.0f, 20000f);
+            gl.Perspective(50f, (double)width / height, 0.5f, 20000f);
             gl.MatrixMode(OpenGL.GL_MODELVIEW);
             gl.LoadIdentity();            
         }
@@ -197,7 +195,7 @@ namespace AssimpSample
                 gl.Viewport(0, 0, m_width, m_height);
 
                 // transformations based on keyboard events will apply to all of the objects on the scene
-                gl.Translate(0.0f, 15.0f, -m_sceneDistance);
+                gl.Translate(0.0f, 50.0f, -m_sceneDistance);
                 gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
                 gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
@@ -274,45 +272,39 @@ namespace AssimpSample
             gl.Scale(150f, 20f, 30f);
          
        
-            gl.Color(0.6f, 0.1f, 0.3f);
+            gl.Color(1f, 0.5f, 1f);
             Cube stepenica = new Cube();
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //druga stepenica
             gl.Translate(0, 1f, -2f);
             gl.Scale(1f, 2f, 1f);
-            gl.Color(1f, 0.1f, 0.3f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
 
             //treca stepenica
             gl.Translate(0, 0.5f, -2f);
             gl.Scale(1f, 1.5f, 1f);
-            gl.Color(0.6f, 1f, 0.3f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //cetvrta stepenica
             gl.Translate(0, 0.33f, -2f);
             gl.Scale(1f, 1.33f, 1f);
-            gl.Color(0.6f, 0.1f, 1f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
             
             //peta stepenica
             gl.Translate(0, 0.25f, -2f);
             gl.Scale(1f, 1.25f, 1f);
-            gl.Color(1f, 1f, 0.5f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //sesta stepenica
             gl.Translate(0, 0.17f, -2f);
             gl.Scale(1f, 1.17f, 1f);
-            gl.Color(1f, 0.5f, 1f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //sedma stepenica
-            gl.Translate(0, 0.14f, -2f);
-            gl.Scale(1f, 1.14f, 1f);
-            gl.Color(0.5f, 1f, 1f);
+            gl.Translate(0, 0.14f, -3f);
+            gl.Scale(1f, 1.14f, 2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             gl.PopMatrix();
@@ -323,10 +315,13 @@ namespace AssimpSample
         {
             float[] podloga =
             {
+                1000.0f, -300.0f,  170.0f,
+                1000.0f, -300.0f, -1000.0f,
+                -1000.0f, -300.0f, -1000.0F,
                 -1000.0f, -300.0f,  170.0f,
-                -1000.0f, -300.0f, -1000.0f,
-                 1000.0f, -300.0f, -1000.0f,
-                 1000.0f, -300.0f,  170.0f,
+             
+              
+                 
             };
 
             gl.Color(1.0f, 1.0f, 1.0f);
