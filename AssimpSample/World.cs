@@ -54,7 +54,7 @@ namespace AssimpSample
         /// <summary>
         ///	 Udaljenost scene od kamere.
         /// </summary>
-        private float m_sceneDistance = 600.0f;
+        private float m_sceneDistance = 700.0f;
 
         /// <summary>
         ///	 Sirina OpenGL kontrole u pikselima.
@@ -158,8 +158,6 @@ namespace AssimpSample
         {
             gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             gl.Color(1f, 0f, 0f);
-            gl.Enable(OpenGL.GL_CULL_FACE);
-            gl.Enable(OpenGL.GL_DEPTH_TEST);
             m_scene.LoadScene();
             m_scene.Initialize();
         }
@@ -185,23 +183,26 @@ namespace AssimpSample
         /// </summary>
         public void Draw(OpenGL gl)
         {
+            // Ocisti sadrzaj kolor bafera i bafera dubine x
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-            // drawing objects which can be manipuleted by keyboard events
+            gl.Enable(OpenGL.GL_CULL_FACE);
+            gl.Enable(OpenGL.GL_DEPTH_TEST);
+
             gl.PushMatrix();
             {
 
                 // setting viewport to take full screen
                 gl.Viewport(0, 0, m_width, m_height);
 
-                // transformations based on keyboard events will apply to all of the objects on the scene
+                
                 gl.Translate(0.0f, 50.0f, -m_sceneDistance);
                 gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
                 gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
                 // person
                 gl.PushMatrix();
-                DrawMeshModel(gl);
+                DrawModel(gl);
                 gl.PopMatrix();
 
                 // podloga
@@ -222,7 +223,6 @@ namespace AssimpSample
             gl.PushMatrix();
             {
                 // placing text by redefining viewport
-                gl.Viewport((int)(m_width / 1.1), 0, m_width / 2, m_height / 2);
                 DrawTextRightBottomCorner(gl);
             }
             gl.PopMatrix();
@@ -249,7 +249,7 @@ namespace AssimpSample
 
       
 
-            private void DrawMeshModel(OpenGL gl)
+            private void DrawModel(OpenGL gl)
         {
 
             gl.PushMatrix();
@@ -277,34 +277,29 @@ namespace AssimpSample
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //druga stepenica
-            gl.Translate(0, 1f, -2f);
-            gl.Scale(1f, 2f, 1f);
+            gl.Translate(0, 2f, -2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
 
             //treca stepenica
-            gl.Translate(0, 0.5f, -2f);
-            gl.Scale(1f, 1.5f, 1f);
+            gl.Translate(0, 2f, -2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //cetvrta stepenica
-            gl.Translate(0, 0.33f, -2f);
-            gl.Scale(1f, 1.33f, 1f);
+            gl.Translate(0, 2f, -2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
-            
+
             //peta stepenica
-            gl.Translate(0, 0.25f, -2f);
-            gl.Scale(1f, 1.25f, 1f);
+            gl.Translate(0, 2f, -2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //sesta stepenica
-            gl.Translate(0, 0.17f, -2f);
-            gl.Scale(1f, 1.17f, 1f);
+            gl.Translate(0, 2f, -2f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             //sedma stepenica
-            gl.Translate(0, 0.14f, -3f);
-            gl.Scale(1f, 1.14f, 2f);
+            gl.Translate(0, -4, -2f);
+            gl.Scale(1f, 7f, 1.5f);
             stepenica.Render(gl, SharpGL.SceneGraph.Core.RenderMode.Render);
 
             gl.PopMatrix();
