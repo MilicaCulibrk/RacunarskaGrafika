@@ -1,15 +1,50 @@
 ﻿<Window x:Class="AssimpSample.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SharpGL WPF Application" WindowState="Maximized" WindowStyle="SingleBorderWindow"
+        Title="SharpGL WPF Application"
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF" KeyDown="Window_KeyDown">
-    <Grid>
-        
+
+    <DockPanel>
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+
+                <Label>
+                    Skaliranje osobe po y-osi:
+                </Label>
+                <TextBox Name="PersonSizeTextBox" Text="{Binding PersonSize, Mode=TwoWay}" KeyUp="PersonSize_KeyUp" PreviewTextInput="NumberValidationTextBox" Width="30"/>
+
+                <Label>
+                    R:
+                </Label>
+                <Button Content="+"  Click="rPlus"  Width="30"  Height="20" />
+                <Button Content="-"  Click="rMinus" Width="30" Height="20" />
+
+                <Label>
+                    G:
+                </Label>
+                <Button Content="+"  Click="gPlus"  Width="30" Height="20" />
+                <Button Content="-"  Click="gMinus"  Width="30" Height="20" />
+
+                <Label>
+                    B:
+                </Label>
+                <Button Content="+"  Click="bPlus"  Width="30" Height="20" />
+                <Button Content="-"  Click="bMinus"  Width="30" Height="20" />
+
+            </ToolBar>
+        </ToolBarTray>
+
         <!-- The OpenGL control provides a OpenGL drawing surface. -->
         <sharpGL:OpenGLControl 
             Name="openGLControl" OpenGLDraw="openGLControl_OpenGLDraw" 
             OpenGLInitialized="openGLControl_OpenGLInitialized" Resized="openGLControl_Resized"
-            DrawFPS="True" RenderContextType="FBO" FrameRate="10"/>
-        
-    </Grid>
+            DrawFPS="True" RenderContextType="FBO" FrameRate="10" />
+
+
+
+
+      
+
+    </DockPanel>
 </Window>
