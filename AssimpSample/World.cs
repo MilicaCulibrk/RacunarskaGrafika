@@ -87,9 +87,9 @@ namespace AssimpSample
         private float rotateY = 0.0f;
 
         private float plus = 0.0f;
-        public float rAmbient = 0.3f;
-        public float gAmbient = 0.3f;
-        public float bAmbient = 0.3f;
+        public float rAmbient = 1f;
+        public float gAmbient = 1f;
+        public float bAmbient = 0.8f;
 
 
 
@@ -212,6 +212,10 @@ namespace AssimpSample
             gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             gl.Color(1f, 0f, 0f);
 
+          
+            gl.Enable(OpenGL.GL_DEPTH_TEST);
+            gl.Enable(OpenGL.GL_CULL_FACE);
+
 
 
             gl.Enable(OpenGL.GL_COLOR_MATERIAL);
@@ -219,25 +223,18 @@ namespace AssimpSample
             //gl.Enable(OpenGL.GL_TEXTURE_2D);
             // gl.Enable(OpenGL.GL_LIGHTING);
 
-            SetupRedLight(gl);
-            SetupRedLight(gl);
-
             gl.Enable(OpenGL.GL_NORMALIZE);
 
             m_scene.LoadScene();
             m_scene.Initialize();
             LoadTextures(gl);
             SetupLighting(gl);
+            //SetupRedLight(gl);
+        
         }
 
         public void SetupLighting(OpenGL gl)
         {
-
-            //color tracking - definisanje materijala
-            //ambijentalna - sveprisutna svetlost iz svih pravaca, kao dnevna
-            //difuzna - osvetljava objekte iz nekog pravca, refleksija pod normalnim uglom, stona lampa
-           
-
 
             gl.Enable(OpenGL.GL_LIGHTING); //OMOGUCI SVETLO
             gl.Enable(OpenGL.GL_LIGHT0); //UKLJUCI SVETLO PORED STEPENICA
@@ -247,11 +244,11 @@ namespace AssimpSample
                                                         //float[] WHITE = new float[] { 1.0f,1.0f,1f }; //BELA BOJA
                                                         //tackasti izvor, stacionaran
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f); //TACKASTI IZVOR
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new float[] { 1f, 1f, 1f });//AKO IH STAVIM SVE NA 1, ONDA BUDE PREVISE BELA CELA SCENA
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new float[] { 0.7f, 0.7f, 0.7f });
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, new float[] { 0.3f, 0.3f, 0.3f });
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new float[] { 1f, 1f, 0f });//AKO IH STAVIM SVE NA 1, ONDA BUDE PREVISE BELA CELA SCENA
+            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new float[] { 0.7f, 0.7f, 0.7f });
+            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, new float[] { 0.3f, 0.3f, 0.3f });
 
-            float[] pos = { 3500, 500, 0f, 1.0f };
+            float[] pos = { 3500, 250, 3000f, 1.0f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pos);
             //POZICIJU ZA STACIONARNO DEFINISEM OVDE KAKO KASNIJE NIJEDNA TRANSFORMACIJA NE BI UTICALA NA NJEGA
 
@@ -288,8 +285,9 @@ namespace AssimpSample
         private void LoadTextures(OpenGL gl)
         {
             //nacin stapanja teksture sa materijalom GL_ADD
-            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
+            
 
             gl.GenTextures(m_textureCount, m_textures);
 
@@ -326,7 +324,7 @@ namespace AssimpSample
 
             /// <summary>
             /// Podesava viewport i projekciju za OpenGL kontrolu.
-            /// </summary>
+            /// </summary> 
             public void Resize(OpenGL gl, int width, int height)
         {
             m_width = width;
@@ -347,12 +345,11 @@ namespace AssimpSample
             // Ocisti sadrzaj kolor bafera i bafera dubine x
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-            gl.Enable(OpenGL.GL_CULL_FACE);
-            gl.Enable(OpenGL.GL_DEPTH_TEST);
+          
 
             gl.LoadIdentity();
 
-            gl.LookAt(0f, 200.0f, m_sceneDistance, 0, 0, 0, 0.0f, 1.0f, 0.0f);
+            gl.LookAt(-500f, 200.0f, m_sceneDistance, -300, 200, 0, 0.0f, 1.0f, 0.0f);
             float[] light0ambient = new float[] { rAmbient, gAmbient, bAmbient, 1.0f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
 
@@ -363,7 +360,7 @@ namespace AssimpSample
                 // setting viewport to take full screen
                 gl.Viewport(0, 0, m_width, m_height);
 
-                
+
                 gl.Translate(0.0f, 50.0f, -m_sceneDistance);
                 gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
                 gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
@@ -371,7 +368,7 @@ namespace AssimpSample
                 gl.PushMatrix();
 
                 gl.Scale(1, mm_scale, 1);
-               
+
 
                 // person
                 gl.PushMatrix();
@@ -394,21 +391,44 @@ namespace AssimpSample
             }
             gl.PopMatrix();
 
+            if (m_width < 400)
+            {
+                gl.Viewport(0, 0, m_width / 2, m_height / 2);
+            }
+            else if (m_width >= 400 && m_width < 700)
+            {
+                gl.Viewport((int)(m_width / 1.4), 0, m_width / 2, m_height / 2);
+
+            }
+            else if (m_width >= 700 && m_width < 1000)
+            {
+                gl.Viewport((int)(m_width / 1.3), 0, m_width / 2, m_height / 2);
+
+            }
+            else if (m_width >= 1000 && m_width < 1400)
+            {
+                gl.Viewport((int)(m_width / 1.22), 0, m_width / 2, m_height / 2);
+
+            }
+            else
+            {
+                gl.Viewport((int)(m_width / 1.13), 0, m_width / 2, m_height / 2);
+            }
+
             // right bottom corner text
             gl.PushMatrix();
             {
-                // placing text by redefining viewport
                 DrawTextRightBottomCorner(gl);
             }
             gl.PopMatrix();
+
 
             // reset the viewport
             gl.Viewport(0, 0, m_width, m_height);
 
             gl.Flush();
+
         }
-
-
 
 
         /// <summary>
@@ -431,7 +451,7 @@ namespace AssimpSample
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
 
             
-            gl.Translate(x, y, z);
+            gl.Translate(x, -305 + mm_scale*100, z);
             gl.Scale(2.5f, 2.5f, 2.5f);
             gl.Scale(1f, mm_scale, 1f);
             gl.Rotate(0.0f, 135f, 0);
@@ -516,7 +536,6 @@ namespace AssimpSample
            // gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
 
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.PODLOGA]);
-            //gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             gl.MatrixMode(OpenGL.GL_TEXTURE);
             gl.LoadIdentity();
             gl.Scale(1f, 1f, 1f);
@@ -542,13 +561,17 @@ namespace AssimpSample
 
         private void DrawTextRightBottomCorner(OpenGL gl)
         {
+
+            gl.DrawText(5, 125, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Predmet: Racunarska grafika");
+            
+            gl.DrawText(5, 100, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sk.god: 2018/19.");
+          
+            gl.DrawText(5, 75, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Ime: Milan");
+         
+            gl.DrawText(5, 50, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Prezime: Lazic");
+            
+            gl.DrawText(5, 25, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sifra zad: 6.2");
         
-            gl.Viewport((int)(m_width / 1.2), 0, m_width / 2, m_height / 2);
-            gl.DrawText(160, 125, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Predmet: Racunarska grafika");
-            gl.DrawText(160, 100, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sk.god: 2019/20.");
-            gl.DrawText(160, 75, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Ime: Milica");
-            gl.DrawText(160, 50, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Prezime: Culibrk");
-            gl.DrawText(160, 25, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sifra zad: 11.1");
 
         }
 

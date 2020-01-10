@@ -208,23 +208,7 @@ namespace AssimpSample
         }
 
 
-        private void rotirajIgloMinus(object sender, RoutedEventArgs e)
-        {
-            if (World.startAnimation == false)
-            {
-                m_world.RotateY -= 5.0f;
-
-            }
-
-        }
-        private void rotirajIgloPlus(object sender, RoutedEventArgs e)
-        {
-            if (World.startAnimation == false)
-            {
-                m_world.RotateY += 5.0f;
-
-            }
-        }
+     
         private void rMinus(object sender, RoutedEventArgs e)
         {
             if (m_world.rAmbient > 0.0f)
