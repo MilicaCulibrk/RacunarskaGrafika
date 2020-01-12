@@ -21,6 +21,12 @@ using System.Windows.Threading;
 namespace AssimpSample
 {
 
+    public enum VerticalScaling
+    {
+        Real_size,
+        Double,
+        Triple
+    };
 
     /// <summary>
     ///  Klasa enkapsulira OpenGL kod i omogucava njegovo iscrtavanje i azuriranje.
@@ -28,6 +34,8 @@ namespace AssimpSample
     public class World : IDisposable
     {
         #region Atributi
+
+      
 
         /// <summary>
         ///	 Ugao rotacije Meseca
@@ -76,6 +84,33 @@ namespace AssimpSample
         /// </summary>
         private float mm_scale = 1.0f;
 
+        private VerticalScaling m_selectedVerticalScaling;
+
+        private float m_selectedVerticalScaling_value = 1;
+
+        public VerticalScaling PersonVerticalScaling
+        {
+            get { return m_selectedVerticalScaling; }
+            set
+            {
+                m_selectedVerticalScaling = value;
+                switch (m_selectedVerticalScaling)
+                {
+                    case VerticalScaling.Real_size:
+                        m_selectedVerticalScaling_value = 1;
+                        break;
+
+                    case VerticalScaling.Double:
+                        m_selectedVerticalScaling_value = 2;
+                        break;
+
+                    case VerticalScaling.Triple:
+                        m_selectedVerticalScaling_value = 3;
+                        break;
+                };
+            }
+        }
+
         private enum TextureObjects { PODLOGA = 0, STEPENICE, OSOBA };
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
@@ -90,6 +125,7 @@ namespace AssimpSample
         public float rAmbient = 1f;
         public float gAmbient = 1f;
         public float bAmbient = 0.8f;
+        public float hangarHeight = 4.5f;
 
 
 
@@ -384,8 +420,7 @@ namespace AssimpSample
 
                 gl.PushMatrix();
 
-                gl.Scale(1, mm_scale, 1);
-
+                //gl.Scale(1, mm_scale - 1, 1);
 
                 // person
                 gl.PushMatrix();
@@ -467,16 +502,27 @@ namespace AssimpSample
             gl.PushMatrix();
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
 
-            
             gl.Translate(x, y, z);
             gl.Scale(2.5f, 2.5f, 2.5f);
-            gl.Scale(1f, mm_scale, 1f);
+
+            if (m_selectedVerticalScaling_value == 2)
+            {
+                gl.Translate(0f, 35, 0f);
+                gl.Scale(1f, m_selectedVerticalScaling_value, 1f);
+            }
+
+            if (m_selectedVerticalScaling_value == 3)
+            {
+                gl.Translate(0f, 70, 0f);
+                gl.Scale(1f, m_selectedVerticalScaling_value, 1f);
+            }
+
+          
+           
             gl.Rotate(0.0f, 135f, 0);
 
-
             m_scene.Draw();
-
-            gl.PopMatrix();
+            gl.PopMatrix();      
             gl.Flush();
         }
 

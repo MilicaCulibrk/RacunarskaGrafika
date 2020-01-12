@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SharpGL WPF Application"
-        xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF" KeyDown="Window_KeyDown">
+        xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF" KeyDown="Window_KeyDown" Loaded="Window_Loaded">
 
     <DockPanel>
 
@@ -12,8 +12,8 @@
                 <Label>
                     Skaliranje osobe po y-osi:
                 </Label>
-                <TextBox Name="PersonSizeTextBox" Text="{Binding PersonSize, Mode=TwoWay}" KeyUp="PersonSize_KeyUp" PreviewTextInput="NumberValidationTextBox" Width="30"/>
-
+                <ComboBox Name="cb1" Width="100" SelectionChanged="changeVerticalScale"/>
+               
                 <Label>
                     R:
                 </Label>
@@ -35,6 +35,8 @@
                 <Label x:Name="label" Content="Brzina animacije"/>
                 <Slider x:Name="sliderBrzina" Value="-1000"  Width="100" ValueChanged="sliderBrzina_ValueChanged" Minimum="-1000" Maximum="-100" />
 
+                
+                
             </ToolBar>
         </ToolBarTray>
 

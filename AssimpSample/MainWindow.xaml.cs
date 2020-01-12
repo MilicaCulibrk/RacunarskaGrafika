@@ -52,12 +52,18 @@ namespace AssimpSample
             {
                 _personSize = value;
                 OnPropertyChanged("PersonSize");
-                float forScaling = (float)_personSize / 100;
+                float forScaling = (float)_personSize /100;
 
                 m_world.MMScale = forScaling;
 
             }
 
+        }
+
+        private void sliderHangar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (m_world != null)
+                m_world.hangarHeight = (float)e.NewValue;
         }
 
         #endregion Atributi
@@ -111,6 +117,12 @@ namespace AssimpSample
         private void openGLControl_Resized(object sender, OpenGLEventArgs args)
         {
             m_world.Resize(args.OpenGL, (int)openGLControl.ActualWidth, (int)openGLControl.ActualHeight);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            cb1.ItemsSource = Enum.GetValues(typeof(VerticalScaling));
+            cb1.SelectedIndex = 0;
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -197,18 +209,7 @@ namespace AssimpSample
 
         }
 
-        private void PersonSize_KeyUp(object sender, KeyEventArgs e)
-        {
-            int n;
-            bool number = Int32.TryParse(PersonSizeTextBox.Text, out n);
-            if (number)
-            {
-                if (PersonSize != n)
-                    PersonSize = n;
-            }
-
-        }
-
+     
 
      
         private void rMinus(object sender, RoutedEventArgs e)
@@ -262,6 +263,13 @@ namespace AssimpSample
 
             if (m_world != null && World.startAnimation == true)
                 World.ubrzajAnimaciju(-slider);
+        }
+
+    
+
+        private void changeVerticalScale(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            m_world.PersonVerticalScaling = (VerticalScaling)cb1.SelectedIndex;
         }
 
 
