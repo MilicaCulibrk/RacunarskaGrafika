@@ -220,9 +220,7 @@ namespace AssimpSample
 
             gl.Enable(OpenGL.GL_COLOR_MATERIAL);
             gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
-            //gl.Enable(OpenGL.GL_TEXTURE_2D);
-            // gl.Enable(OpenGL.GL_LIGHTING);
-
+       
             gl.Enable(OpenGL.GL_NORMALIZE);
 
             m_scene.LoadScene();
@@ -252,32 +250,51 @@ namespace AssimpSample
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pos);
             //POZICIJU ZA STACIONARNO DEFINISEM OVDE KAKO KASNIJE NIJEDNA TRANSFORMACIJA NE BI UTICALA NA NJEGA
 
+            float[] light1diffuse = new float[] { 0.7f, 0.0f, 0.0f, 1f };
+
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, light1diffuse);
+
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40.0f);
+            gl.Enable(OpenGL.GL_LIGHTING);
+            gl.Enable(OpenGL.GL_LIGHT1);
+
+
+
 
             //iznad hangara, cut off 25
             //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 25f);//REFLEKTORSKI         
             //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, RED);
             //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, RED);
             //POZICIJU ZA OVO SVETLO DEFINISEM POSLE, KOD CRTANJA ANTENE, JER TREBA UVEK DA BUDE NA VRHU ANTENE
-    
+
 
         }
 
         private void SetupRedLight(OpenGL gl)
         {
-            float[] light1pos = new float[] { -250.0f, 500.0f, -500.0f, 1.0f };
-            float[] light1diffuse = new float[] { 1f, 0f, 0f, 1.0f };
-            float[] light1ambient = new float[] { 0.2f, 0f, 0f, 1.0f };
-            float[] light1direction = new float[] { 0.0f, -1.0f, 0.0f, 1.0f };
+            /* float[] light1pos = new float[] { -250.0f, 500.0f, -500.0f, 1.0f };
+             float[] light1diffuse = new float[] { 1f, 0f, 0f, 1.0f };
+             float[] light1ambient = new float[] { 0.2f, 0f, 0f, 1.0f };
+             float[] light1direction = new float[] { 0.0f, -1.0f, 0.0f, 1.0f };
 
-            //  gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, light1ambient);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, light1diffuse);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, light1diffuse);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, light1direction);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40.0f);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, light1pos);
+             //  gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, light1ambient);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, light1diffuse);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, light1diffuse);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, light1direction);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40.0f);
+             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, light1pos);
 
-            gl.Enable(OpenGL.GL_LIGHT1);
-            gl.Enable(OpenGL.GL_LIGHTING);
+             gl.Enable(OpenGL.GL_LIGHT1);
+             gl.Enable(OpenGL.GL_LIGHTING); */
+
+            gl.Enable(OpenGL.GL_LIGHT1);// UKLJUCI SVETLO NA ANTENI
+            float[] RED = new float[] { 1.0f, 0f, 0f }; //CRVENA BOJA
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40f);//REFLEKTORSKI         
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, RED);
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, RED);
+
+            float[] pos = { -250, 300, 0f, 1.0f };
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, pos);
 
 
         }
@@ -451,16 +468,11 @@ namespace AssimpSample
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_MODULATE);
 
             
-            gl.Translate(x, -305 + mm_scale*100, z);
+            gl.Translate(x, y, z);
             gl.Scale(2.5f, 2.5f, 2.5f);
             gl.Scale(1f, mm_scale, 1f);
             gl.Rotate(0.0f, 135f, 0);
 
-
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, new float[] { 0.0f, -1.0f, 0.0f });
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { 5.0f, 50.0f, 0f, 1.0f });
-
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, m_ambientColor);
 
             m_scene.Draw();
 
@@ -475,6 +487,8 @@ namespace AssimpSample
             gl.Rotate(0.0f, -35f, -0.0f);
             gl.Translate(-250, -274f, -40f);
             gl.Scale(150f, 20f, 30f);
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, new float[] { 0.0f, -1.0f, 0.0f });
+            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { -30.0f, 300.0f, -50f, 1.0f });
             //gl.Color(1f, 0.5f, 1f);
 
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.STEPENICE]);
@@ -575,79 +589,78 @@ namespace AssimpSample
 
         }
 
+        public static void ubrzajAnimaciju(float ms)
+        {
+            if (timer != null)
+                timer.Stop(); // AKO JE POKRENUT ZAUSTAVI GA
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(ms);
+            timer.Tick += new EventHandler(Animacija);
+            timer.Start();
+        }
+
         public static void Animacija(object sender, EventArgs e)
         {
-
+            //prva stepenica
             if (y == -205.0f)
             {
                 timer.Start();
                 y += 45f;
-                z += -50f;
-                x += 50f;
+                z += -40f;
+                x += 30f;
 
             }
+            //druga stepenica
             else if (y == -160.0f)
             {
-                y += 42f;
-                z += -47f;
-                x += 50f;
+                y += 35f;
+                z += -55f;
+                x += 35f;
             }
-            else if (y == -118f)
+            //treca stepenica
+            else if (y == -125f)
             {
-                y += 42f;
+                y += 45f;
                 z += -40f;
-                x += 50f;
+                x += 30f;
             }
-            else if (y == -76f)
+            //cetvrta stepenica
+            else if (y == -80f)
             {
                 y += 40f;
-                z += -30f;
-                x += 50f;
+                z += -50f;
+                x += 30f;
             }
-            else if (y == -36f)
+            //peta stepenica
+            else if (y == -40f)
             {
-                y += 38f;
-                z += -35f;
-                x += 50f;
+                y += 40f;
+                z += -50f;
+                x += 35f;
             }
-            else if (y == 2f)
+            //sesta stepenica
+            else if (y == 0f)
             {
-                y += 38f;
-                z += -35f;
-                x += 50f;
+                y += 40f;
+                z += -45f;
+                x += 35f;
             }
+            //sedma stepenica
             else if (y == 40f)
             {
                 y += 38f;
-                z += -35f;
-                x += 50f;
+                z += -50f;
+                x += 35f;
             }
-            /*else if (x == -150f)
-            {
-                y -= 20f;
-                x += 10f;
-                rot_y = 10f;
-            }
-            else if (x == -160)
-            {
-                x += 10f;
-                rot_y *= -1;
-            }
-            else if (x > -160f && x < 0f)
-            {
-                x += 10f;
-                rot_y *= -1;
-            } */
-            else if (y == 130)
+   
+            else if (y == 78)
             {
                 startAnimation = false;
                 endAnimation = true;
 
-               // x = 0f;
-                //y = -100f;
-                //rot_y = 0f;
-
                 timer.Stop();
+           
+               
             }
         }
 

@@ -34,6 +34,8 @@ namespace AssimpSample
 
         private int _personSize = 100;
 
+        float slider = -1000;
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string name)
         {
@@ -183,7 +185,7 @@ namespace AssimpSample
                         World.startAnimation = true;
                         World.timer = new System.Windows.Threading.DispatcherTimer();
                         World.timer.Tick += new EventHandler(World.Animacija);
-                        World.timer.Interval = TimeSpan.FromMilliseconds(600);
+                        World.timer.Interval = TimeSpan.FromMilliseconds(-slider);
                         World.x = -180f;
                         World.y = -205f;
                         World.z = -100f;
@@ -252,6 +254,14 @@ namespace AssimpSample
             {
                 m_world.bAmbient += 0.1f;
             }
+        }
+
+        private void sliderBrzina_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            slider = (float)e.NewValue;
+
+            if (m_world != null && World.startAnimation == true)
+                World.ubrzajAnimaciju(-slider);
         }
 
 

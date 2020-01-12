@@ -32,6 +32,9 @@
                 <Button Content="+"  Click="bPlus"  Width="30" Height="20" />
                 <Button Content="-"  Click="bMinus"  Width="30" Height="20" />
 
+                <Label x:Name="label" Content="Brzina animacije"/>
+                <Slider x:Name="sliderBrzina" Value="-1000"  Width="100" ValueChanged="sliderBrzina_ValueChanged" Minimum="-1000" Maximum="-100" />
+
             </ToolBar>
         </ToolBarTray>
 
