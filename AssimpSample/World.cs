@@ -23,9 +23,9 @@ namespace AssimpSample
 
     public enum VerticalScaling
     {
-        Real_size,
-        Double,
-        Triple
+        Stvarna_Velicina,
+        Duplo,
+        Troduplo
     };
 
     /// <summary>
@@ -35,8 +35,7 @@ namespace AssimpSample
     {
         #region Atributi
 
-      
-
+     
         /// <summary>
         ///	 Ugao rotacije Meseca
         /// </summary>
@@ -82,11 +81,13 @@ namespace AssimpSample
         /// <summary>
         ///	 Scaling factor for model
         /// </summary>
-        private float mm_scale = 1.0f;
+       
 
         private VerticalScaling m_selectedVerticalScaling;
 
         private float m_selectedVerticalScaling_value = 1;
+
+    
 
         public VerticalScaling PersonVerticalScaling
         {
@@ -96,43 +97,29 @@ namespace AssimpSample
                 m_selectedVerticalScaling = value;
                 switch (m_selectedVerticalScaling)
                 {
-                    case VerticalScaling.Real_size:
+                    case VerticalScaling.Stvarna_Velicina:
                         m_selectedVerticalScaling_value = 1;
                         break;
 
-                    case VerticalScaling.Double:
+                    case VerticalScaling.Duplo:
                         m_selectedVerticalScaling_value = 2;
                         break;
 
-                    case VerticalScaling.Triple:
+                    case VerticalScaling.Troduplo:
                         m_selectedVerticalScaling_value = 3;
                         break;
                 };
             }
         }
 
-        private enum TextureObjects { PODLOGA = 0, STEPENICE, OSOBA };
+        private enum TextureObjects { PODLOGA = 0, STEPENICE};
         private readonly int m_textureCount = Enum.GetNames(typeof(TextureObjects)).Length;
         private uint[] m_textures = null;
-        private string[] m_textureFiles = { "..//..//Textures//plocice.jpg", "..//..//Textures//metal.jpg", "..//..//Textures//osoba.jpg" };
+        private string[] m_textureFiles = { "..//..//Textures//plocice.jpg", "..//..//Textures//metal.jpg" };
 
-        private float[] m_ambientColor = { 0.2f, 0.2f, 0.2f, 0.2f };
-
-        private float scaleUlaz = 140.0f;
-        private float rotateY = 0.0f;
-
-        private float plus = 0.0f;
-        public float rAmbient = 1f;
-        public float gAmbient = 1f;
-        public float bAmbient = 0.8f;
-        public float hangarHeight = 4.5f;
-
-
-
-        public float Plus { get => plus; set => plus = value; }
-
-        public float ScaleUlaz { get => scaleUlaz; set => scaleUlaz = value; }
-        public float RotateY { get => rotateY; set => rotateY = value; }
+        public float rAmbient = 0.8f;
+        public float gAmbient = 0.8f;
+        public float bAmbient = 0.6f;
 
         public static bool startAnimation = false;
         public static DispatcherTimer timer;
@@ -143,11 +130,6 @@ namespace AssimpSample
         public static bool endAnimation = false;
         public static bool disapper = false;
 
-        /// <summary>
-        /// Pomeranje brzine pingvina
-        /// </summary>
-        public static float brzinaPingvina = 10.0f;
-        public static float skokPingvina = 200.0f;
 
         #endregion Atributi
 
@@ -206,11 +188,6 @@ namespace AssimpSample
             get { return m_height; }
             set { m_height = value; }
         }
-        public float MMScale
-        {
-            get { return mm_scale; }
-            set { mm_scale = value; }
-        }
 
         #endregion Properties
 
@@ -246,14 +223,12 @@ namespace AssimpSample
         public void Initialize(OpenGL gl)
         {
             gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            gl.Color(1f, 0f, 0f);
-
-          
+            //gl.Color(1f, 0f, 0f);
+        
             gl.Enable(OpenGL.GL_DEPTH_TEST);
             gl.Enable(OpenGL.GL_CULL_FACE);
 
-
-
+            //kolor tracking
             gl.Enable(OpenGL.GL_COLOR_MATERIAL);
             gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
        
@@ -263,7 +238,6 @@ namespace AssimpSample
             m_scene.Initialize();
             LoadTextures(gl);
             SetupLighting(gl);
-            //SetupRedLight(gl);
         
         }
 
@@ -272,19 +246,14 @@ namespace AssimpSample
 
             gl.Enable(OpenGL.GL_LIGHTING); //OMOGUCI SVETLO
             gl.Enable(OpenGL.GL_LIGHT0); //UKLJUCI SVETLO PORED STEPENICA
-            //gl.Enable(OpenGL.GL_LIGHT1);// UKLJUCI SVETLO NA ANTENI
-
-           // float[] RED = new float[] { 1.0f, 0f, 0f }; //CRVENA BOJA
-                                                        //float[] WHITE = new float[] { 1.0f,1.0f,1f }; //BELA BOJA
-                                                        //tackasti izvor, stacionaran
+     
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPOT_CUTOFF, 180.0f); //TACKASTI IZVOR
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new float[] { 1f, 1f, 0f });//AKO IH STAVIM SVE NA 1, ONDA BUDE PREVISE BELA CELA SCENA
-            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, new float[] { 0.7f, 0.7f, 0.7f });
-            //gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, new float[] { 0.3f, 0.3f, 0.3f });
+            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, new float[] { rAmbient, gAmbient, bAmbient, 1f });
+           
 
-            float[] pos = { 3500, 250, 3000f, 1.0f };
+            float[] pos = { 500, 200, -200f, 1.0f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_POSITION, pos);
-            //POZICIJU ZA STACIONARNO DEFINISEM OVDE KAKO KASNIJE NIJEDNA TRANSFORMACIJA NE BI UTICALA NA NJEGA
+        
 
             float[] light1diffuse = new float[] { 0.7f, 0.0f, 0.0f, 1f };
 
@@ -295,45 +264,9 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_LIGHT1);
 
 
-
-
-            //iznad hangara, cut off 25
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 25f);//REFLEKTORSKI         
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, RED);
-            //gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, RED);
-            //POZICIJU ZA OVO SVETLO DEFINISEM POSLE, KOD CRTANJA ANTENE, JER TREBA UVEK DA BUDE NA VRHU ANTENE
-
-
         }
 
-        private void SetupRedLight(OpenGL gl)
-        {
-            /* float[] light1pos = new float[] { -250.0f, 500.0f, -500.0f, 1.0f };
-             float[] light1diffuse = new float[] { 1f, 0f, 0f, 1.0f };
-             float[] light1ambient = new float[] { 0.2f, 0f, 0f, 1.0f };
-             float[] light1direction = new float[] { 0.0f, -1.0f, 0.0f, 1.0f };
-
-             //  gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_AMBIENT, light1ambient);
-             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, light1diffuse);
-             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, light1diffuse);
-             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_DIRECTION, light1direction);
-             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40.0f);
-             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, light1pos);
-
-             gl.Enable(OpenGL.GL_LIGHT1);
-             gl.Enable(OpenGL.GL_LIGHTING); */
-
-            gl.Enable(OpenGL.GL_LIGHT1);// UKLJUCI SVETLO NA ANTENI
-            float[] RED = new float[] { 1.0f, 0f, 0f }; //CRVENA BOJA
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPOT_CUTOFF, 40f);//REFLEKTORSKI         
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_DIFFUSE, RED);
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_SPECULAR, RED);
-
-            float[] pos = { -250, 300, 0f, 1.0f };
-            gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, pos);
-
-
-        }
+       
 
         private void LoadTextures(OpenGL gl)
         {
@@ -341,18 +274,21 @@ namespace AssimpSample
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
             
-
+            //slike i teksture
             gl.GenTextures(m_textureCount, m_textures);
-
             for (int i = 0; i < m_textureCount; ++i)
             {
-
+                //identifikatori
                 gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[i]);
 
+                //slika i parametri teksture
                 Bitmap image = new Bitmap(m_textureFiles[i]);
                 image.RotateFlip(RotateFlipType.RotateNoneFlipY);
                 Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+                
+                //alfa kanal, providnost
                 BitmapData imageData = image.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                
                 //kreiraj teksturu
                 gl.TexImage2D(OpenGL.GL_TEXTURE_2D, 0, (int)OpenGL.GL_RGBA8, imageData.Width, imageData.Height, 0, OpenGL.GL_BGRA, OpenGL.GL_UNSIGNED_BYTE, imageData.Scan0);
 
@@ -365,11 +301,8 @@ namespace AssimpSample
                 gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MIN_FILTER, OpenGL.GL_NEAREST);
                 gl.TexParameter(OpenGL.GL_TEXTURE_2D, OpenGL.GL_TEXTURE_MAG_FILTER, OpenGL.GL_NEAREST);
 
-
-
                 image.UnlockBits(imageData);
                 image.Dispose();
-
 
             }
         }
@@ -398,11 +331,10 @@ namespace AssimpSample
             // Ocisti sadrzaj kolor bafera i bafera dubine x
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
-          
-
+         
             gl.LoadIdentity();
 
-            gl.LookAt(-500f, 200.0f, m_sceneDistance, -300, 200, 0, 0.0f, 1.0f, 0.0f);
+            gl.LookAt(-900f, 200.0f, m_sceneDistance, -300, 200, 0, 0.0f, 1.0f, 0.0f);
             float[] light0ambient = new float[] { rAmbient, gAmbient, bAmbient, 1.0f };
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
 
@@ -537,6 +469,7 @@ namespace AssimpSample
             gl.Light(OpenGL.GL_LIGHT1, OpenGL.GL_POSITION, new float[] { -30.0f, 300.0f, -50f, 1.0f });
             //gl.Color(1f, 0.5f, 1f);
 
+            //pridruzujemo stepenicama teksturu metala
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.STEPENICE]);
             
             Cube stepenica = new Cube();
@@ -593,8 +526,8 @@ namespace AssimpSample
                 0.0f, 0.0f
             };
 
-           // gl.TexEnv(OpenGL.GL_TEXTURE_ENV, OpenGL.GL_TEXTURE_ENV_MODE, OpenGL.GL_ADD);
-
+       
+            //pridruzi podlozi teksturu keramickih plocica
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, m_textures[(int)TextureObjects.PODLOGA]);
             gl.MatrixMode(OpenGL.GL_TEXTURE);
             gl.LoadIdentity();
@@ -624,13 +557,13 @@ namespace AssimpSample
 
             gl.DrawText(5, 125, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Predmet: Racunarska grafika");
             
-            gl.DrawText(5, 100, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sk.god: 2018/19.");
+            gl.DrawText(5, 100, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sk.god: 2019/20.");
           
-            gl.DrawText(5, 75, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Ime: Milan");
+            gl.DrawText(5, 75, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Ime: Milica");
          
-            gl.DrawText(5, 50, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Prezime: Lazic");
+            gl.DrawText(5, 50, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Prezime: Culibrk");
             
-            gl.DrawText(5, 25, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sifra zad: 6.2");
+            gl.DrawText(5, 25, 1.0f, 0.0f, 0.0f, "Verdana Italic", 10, "Sifra zad: 11.1");
         
 
         }
@@ -705,8 +638,7 @@ namespace AssimpSample
                 endAnimation = true;
 
                 timer.Stop();
-           
-               
+             
             }
         }
 

@@ -32,7 +32,7 @@ namespace AssimpSample
         /// </summary>
         World m_world = null;
 
-        private int _personSize = 100;
+  
 
         float slider = -1000;
 
@@ -45,27 +45,9 @@ namespace AssimpSample
             }
         }
 
-        public int PersonSize
-        {
-            get { return _personSize; }
-            set
-            {
-                _personSize = value;
-                OnPropertyChanged("PersonSize");
-                float forScaling = (float)_personSize /100;
+      
 
-                m_world.MMScale = forScaling;
-
-            }
-
-        }
-
-        private void sliderHangar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (m_world != null)
-                m_world.hangarHeight = (float)e.NewValue;
-        }
-
+      
         #endregion Atributi
 
         #region Konstruktori
@@ -123,6 +105,7 @@ namespace AssimpSample
         {
             cb1.ItemsSource = Enum.GetValues(typeof(VerticalScaling));
             cb1.SelectedIndex = 0;
+            
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -189,8 +172,11 @@ namespace AssimpSample
                     if (World.startAnimation)
                     {
                         World.timer.Stop();
-                        World.timer = null;
+                        World.timer = null;                      
                         World.startAnimation = false;
+                        cb1.IsEnabled = true;
+                        
+                       
                     }
                     else
                     {
@@ -201,6 +187,7 @@ namespace AssimpSample
                         World.x = -180f;
                         World.y = -205f;
                         World.z = -100f;
+                        cb1.IsEnabled = false;
                         World.timer.Start();
                     }
                     break;
