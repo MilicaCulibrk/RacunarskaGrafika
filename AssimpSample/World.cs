@@ -233,6 +233,7 @@ namespace AssimpSample
             gl.ColorMaterial(OpenGL.GL_FRONT, OpenGL.GL_AMBIENT_AND_DIFFUSE);
        
             gl.Enable(OpenGL.GL_NORMALIZE);
+            gl.Enable(OpenGL.GL_AUTO_NORMAL);
 
             m_scene.LoadScene();
             m_scene.Initialize();
@@ -334,9 +335,7 @@ namespace AssimpSample
          
             gl.LoadIdentity();
 
-            gl.LookAt(-900f, 200.0f, m_sceneDistance, -300, 200, 0, 0.0f, 1.0f, 0.0f);
-            float[] light0ambient = new float[] { rAmbient, gAmbient, bAmbient, 1.0f };
-            gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
+      
 
 
             gl.PushMatrix();
@@ -347,6 +346,11 @@ namespace AssimpSample
 
 
                 gl.Translate(0.0f, 50.0f, -m_sceneDistance);
+                
+                gl.LookAt(-700f, 200.0f, 500, -300, 200, 0, 0.0f, 1.0f, 0.0f);
+                float[] light0ambient = new float[] { rAmbient, gAmbient, bAmbient, 1.0f };
+                gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
+                
                 gl.Rotate(m_xRotation, 1.0f, 0.0f, 0.0f);
                 gl.Rotate(m_yRotation, 0.0f, 1.0f, 0.0f);
 
